@@ -1,3 +1,2 @@
-# Binupa owns the shared repository and should review changes.
-# CODEOWNERS requests review; it does not enforce it without branch protection.
-* @binupa450
+# Team review requests; active collaborator membership required.
+* @rimaz1554 @binupa450

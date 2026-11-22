@@ -1,6 +1,6 @@
 # VISIO — Smart Crowd Monitoring (Landing Page)
 
-Source for the VISIO undergraduate Agile Team Project website:
+**Official CS42 team collaboration repository** for the VISIO undergraduate Agile Team Project website:
 https://visio.codevertexelite.com
 
 This repository includes the React/TypeScript landing page and interactive simulated
@@ -11,7 +11,7 @@ or a production backend. Only authorised camera inputs may be used in any future
 ## Getting started
 
 1. Install Node.js (20.19+ or 22.12+ is recommended for Vite 7).
-2. Clone this repository: git clone https://github.com/binupa450/landing-page.git
+2. Clone this repository: git clone https://github.com/rimaz1554/visio-cs42.git
 3. Run npm ci.
 4. Start the local developer server: npm run dev.
 5. Run npm run build before creating a pull request.
@@ -31,3 +31,14 @@ or a production backend. Only authorised camera inputs may be used in any future
 
 Click Commits on GitHub, or run: git log --oneline --graph --all --decorate.
 To examine code changes: git show <commit-sha>.
+
+## Team access and branches
+
+- **main**: reviewed and stable shared source code.
+- **develop**: shared integration branch for teammates' changes.
+- **feature branches**: a personal branch for each task, reviewed via a pull request.
+- To get write access to this private repository, contact the repository owner **@rimaz1554**, accept the GitHub invitation, then clone it.
+- Do not deploy or modify the live VISIO website without explicit team approval.
+- The original Binupa landing-page repository is kept separately as historical source; use **this repository** for new collaborative work.
+
+See docs/TEAM_ONBOARDING.md for step-by-step contribution instructions.
