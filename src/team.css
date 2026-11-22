@@ -1,0 +1,24 @@
+/* VISIO team roster — scoped to the team section only. */
+.team-section{background:radial-gradient(ellipse at 85% 0%,#e1f0e3 0%,transparent 52%),#eef4ee}
+.team-section .section-head>p{max-width:500px}
+.team-section .team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.team-section .team-grid .team-member{min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 27px 0;min-height:445px;background:#fff;border:1px solid #dce8df;border-radius:22px;box-shadow:0 10px 34px #113e2b0a;overflow:hidden}
+.team-section .team-grid .team-member:focus-within{outline:2px solid #4c955c;outline-offset:3px}
+.team-section .team-grid .team-member::before{background:linear-gradient(90deg,#367f5a,#a8e88b)}
+.team-section .team-member-photo{width:116px;height:116px;padding:4px;border-radius:25px;background:#e6f3e9;border:1px solid #c9decf;box-shadow:0 8px 25px #153b2a19;overflow:hidden;flex-shrink:0}
+.team-section .team-member-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;border-radius:20px}
+.team-section .team-member-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#adea8b;background:radial-gradient(circle at 25% 20%,#295f62,#0c2637 70%);border-radius:20px}
+.team-section .team-member-placeholder span{font-weight:850;color:#fff;font-size:16px;letter-spacing:-.04em}
+.team-section .team-member-number{display:block;margin-top:20px;font-size:10px;letter-spacing:.13em;color:#6a8b77;font-weight:800}
+.team-section .team-grid .team-member h3{font-size:22px;font-weight:740;line-height:1.2;letter-spacing:-.04em;color:#102d28;margin:8px 0 7px;min-height:27px}
+.team-section .team-member-role{font-size:13px;line-height:1.4;font-weight:750;color:#29644b}
+.team-section .team-grid .team-member p{font-size:13px;line-height:1.65;color:#637b76;margin:17px 0 24px;max-width:290px}
+.team-section .team-member-footer{display:flex;align-items:center;justify-content:center;width:calc(100% + 54px);min-height:62px;margin:auto -27px 0;padding:10px 14px;border-top:1px solid #e7eee8;background:#fbfdfb}
+.team-section .team-member-no-link{color:#a6b7ad;font-size:10px;font-weight:700;letter-spacing:.14em}
+.team-section .team-member-social{display:inline-flex;align-items:center;gap:8px;color:#165a82;font-weight:700;font-size:12px;border-radius:7px;padding:9px 12px;transition:background .2s,transform .2s}
+.team-section .team-member-social:hover{background:#e6f1f8;transform:translateY(-2px)}
+.team-section .team-member-social svg{flex-shrink:0}
+.team-section .academic{margin-top:31px}
+@media(max-width:950px){.team-section .team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.team-section .team-grid .team-member{min-height:425px}}
+@media(max-width:540px){.team-section .team-grid{grid-template-columns:1fr;gap:16px}.team-section .team-grid .team-member{min-height:0;padding:26px 22px 0}.team-section .team-member-footer{width:calc(100% + 44px);margin:0 -22px}.team-section .team-grid .team-member p{margin-bottom:25px}.team-section .team-member-photo{height:112px;width:112px}}
+@media(prefers-reduced-motion:reduce){.team-section .team-member-social{transition:none}.team-section .team-member-social:hover{transform:none}}

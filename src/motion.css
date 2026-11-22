@@ -1,0 +1,122 @@
+/* VISIO Motion System 2026 — motion layer imported after premium.css.
+   Section reveals, scroll progress, subtle parallax and keyboard-friendly navigation.
+   All animation respects prefers-reduced-motion. */
+:root{
+  --visio-scroll-progress:0;
+  --visio-hero-shift:0px;
+  --visio-card-shift:0px;
+}
+.visio-scroll-progress{
+  position:fixed;inset:0 0 auto;z-index:99;height:3px;
+  pointer-events:none;
+  background:linear-gradient(90deg,#72d99e 0%,#c5fc7d 48%,#f2ffb5 100%);
+  transform-origin:left center;transform:scaleX(var(--visio-scroll-progress));
+  box-shadow:0 0 17px rgba(183,255,123,.46);
+}
+.header{transition:background-color .3s ease,box-shadow .3s ease,border-color .3s ease}
+.visio-scrolled .header{background:rgba(5,24,31,.95);box-shadow:0 14px 34px rgba(0,12,18,.28);border-color:rgba(191,255,182,.22)}
+.navlinks a.is-active{color:#eaffd8}
+.navlinks a.is-active::after{right:0}
+.hero-mesh{transform:translate3d(0,var(--visio-hero-shift),0);will-change:transform;transition:opacity .3s}
+.hero-visual{transform:perspective(1600px) rotateY(-3deg) rotateX(1deg) translate3d(0,var(--visio-card-shift),0)}
+.hero-visual:hover{transform:perspective(1600px) rotateY(0deg) rotateX(0deg) translate3d(0,var(--visio-card-shift),0) translateY(-3px)}
+.hero-scroll-cue{
+  display:inline-flex;align-items:center;gap:13px;margin-top:45px;
+  font-size:10px;font-weight:750;letter-spacing:.20em;color:#b4d3c3;
+  transition:color .25s ease;
+}
+.hero-scroll-cue span:first-child{border-bottom:1px solid rgba(197,252,125,.32);padding-bottom:7px}
+.hero-scroll-cue .scroll-cue-icon{
+  display:grid;place-items:center;width:27px;height:27px;border-radius:50%;
+  border:1px solid rgba(189,251,136,.33);color:#c5fc7d;
+  animation:visio-nudge-down 2.8s ease-in-out infinite;
+}
+.hero-scroll-cue:hover{color:#f1ffe3}
+.hero-scroll-cue:hover .scroll-cue-icon{border-color:#c5fc7d}
+.hero-scroll-cue .scroll-cue-icon svg{transform:rotate(90deg)}
+@keyframes visio-nudge-down{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+/* Entry motion: opt-in only after IntersectionObserver mounts.
+   Hidden state has no effect if scripts or observer fail. */
+@media(prefers-reduced-motion:no-preference){
+ .visio-motion-ready [data-visio-reveal]{
+   transition-property:opacity,transform,filter;
+   transition-duration:.85s,.88s,.85s;
+   transition-timing-function:cubic-bezier(.2,.78,.2,1);
+   transition-delay:var(--reveal-delay,0ms);
+ }
+ .visio-motion-ready [data-visio-reveal]:not(.is-visible){
+   opacity:0;transform:translate3d(0,36px,0);filter:blur(4px);
+ }
+ .visio-motion-ready [data-visio-reveal].is-visible{opacity:1;filter:none}
+ .visio-motion-ready .section-head[data-visio-reveal]:not(.is-visible){
+   transform:translate3d(0,22px,0)
+ }
+ .visio-motion-ready .pipeline-node[data-visio-reveal]:not(.is-visible){
+   transform:translate3d(0,20px,0) scale(.975)
+ }
+ .visio-motion-ready .simulation[data-visio-reveal]:not(.is-visible){
+   transform:translate3d(0,28px,0) scale(.99)
+ }
+}
+/* Readable presentation details */
+.section-head{position:relative}
+.section-head .eyebrow{position:relative}
+.section-head .eyebrow::after{
+  content:"";width:32px;height:1px;display:inline-block;margin-left:8px;
+  background:currentColor;opacity:.55;vertical-align:middle;
+}
+.problem-grid article::after,.feature::after,.team-grid article::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  box-shadow:inset 0 0 0 1px rgba(158,229,126,0);pointer-events:none;
+  transition:box-shadow .35s ease;
+}
+.problem-grid article:hover::after,.feature:hover::after,.team-grid article:hover::after{
+  box-shadow:inset 0 0 0 1px rgba(117,179,117,.24)
+}
+.section.light,.feature-section,.demo-section,.team-section{position:relative;isolation:isolate;overflow:hidden}
+.section.light::before,.feature-section::before,.demo-section::before,.team-section::before{
+  content:"";position:absolute;z-index:-1;pointer-events:none;
+  right:-260px;top:5%;width:640px;height:640px;border-radius:50%;
+  background:radial-gradient(circle,rgba(136,203,155,.09),transparent 68%);
+}
+.feature-section::before{right:auto;left:-290px;top:0;background:radial-gradient(circle,rgba(102,174,133,.1),transparent 68%)}
+.demo-section::before{top:24%;right:-310px;background:radial-gradient(circle,rgba(147,212,164,.16),transparent 66%)}
+.team-section::before{right:auto;left:-300px;top:15%}
+.technology{position:relative;isolation:isolate;overflow:hidden}
+.technology::after{
+  content:"";position:absolute;z-index:-1;width:660px;height:660px;
+  left:-330px;bottom:-360px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(128,217,165,.14),transparent 67%);
+}
+.pipeline-node{transition:transform .3s ease,border-color .3s ease,background-color .3s ease}
+.pipeline-node:hover{transform:translateY(-4px);border-color:rgba(197,252,125,.46)}
+.pipe-arrow svg{transition:transform .4s ease,opacity .3s ease}
+@media(prefers-reduced-motion:no-preference){
+ .technology:has(.pipeline-node.is-visible) .pipe-arrow svg{
+   animation:visio-pipeline-forward 1.5s cubic-bezier(.2,.8,.2,1) 1 both
+ }
+}
+@keyframes visio-pipeline-forward{
+  0%{opacity:.25;transform:translateX(-7px)}
+  70%{opacity:1;transform:translateX(3px)}
+  100%{opacity:1;transform:translateX(0)}
+}
+.research-list>div{transition:border-color .25s ease,background-color .25s ease}
+.research-list>div:hover{border-color:#a9c9ad}
+.tabs button{transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+@media(max-width:760px){
+  .hero-mesh{transform:none}
+  .hero-visual,.hero-visual:hover{transform:none}
+  .hero-scroll-cue{display:none}
+  .section-head .eyebrow::after{width:22px;margin-left:2px}
+  .visio-motion-ready [data-visio-reveal]:not(.is-visible){transform:translate3d(0,19px,0);filter:none}
+  .visio-motion-ready .simulation[data-visio-reveal]:not(.is-visible){transform:translate3d(0,16px,0)}
+  .pipeline-node:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .visio-scroll-progress{transition:none}
+  .hero-mesh,.hero-visual,.hero-visual:hover{transform:none!important;will-change:auto!important}
+  .hero-scroll-cue .scroll-cue-icon,.pipe-arrow svg{animation:none!important}
+  [data-visio-reveal]{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+  .pipeline-node:hover{transform:none}
+}

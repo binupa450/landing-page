@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://visio.codevertexelite.com/sitemap.xml
