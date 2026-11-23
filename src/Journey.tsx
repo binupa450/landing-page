@@ -22,8 +22,14 @@ function MiniIcon({index}:{index:number}) {
 
 export default function Journey({count,capacity,trend,online}:JourneyProps){
   const [active,setActive]=useState(0);
-  const pct=Math.round(count/capacity*100);
-  const forecast=Math.round(Math.max(0,count+trend*3)/capacity*100);
+  const safeCapacity = Math.max(1, capacity);
+
+  const pct = Math.min(100, Math.round(count / safeCapacity * 100));
+
+  const forecast = Math.min(
+      100,
+      Math.round(Math.max(0, count + trend * 3) / safeCapacity * 100)
+  );
   const condition=!online?'Unavailable':pct>=90?'Very busy':pct>=70?'Busy':'Normal';
   const risk=!online?'Data unavailable':pct>=90?'Critical condition':pct>=70?'Warning condition':forecast>=90?'Projected risk':'Normal condition';
   const outputs=[
