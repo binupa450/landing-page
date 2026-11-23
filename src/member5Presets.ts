@@ -12,3 +12,13 @@ export type PresetValues = {people:number;capacity:number;trend:number;online:bo
 export function getPreset(name:PresetName):PresetValues {
   return {...SIMULATION_PRESETS[name]};
 }
+
+/** Compare only values that define a scenario; display source is independent. */
+export function getActivePreset(values: PresetValues): PresetName | null {
+  for (const name of Object.keys(SIMULATION_PRESETS) as PresetName[]) {
+    const preset=SIMULATION_PRESETS[name];
+    if (values.people===preset.people && values.capacity===preset.capacity &&
+        values.trend===preset.trend && values.online===preset.online) return name;
+  }
+  return null;
+}
