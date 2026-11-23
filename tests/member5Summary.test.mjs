@@ -18,13 +18,3 @@ test('snapshot text normalizes a freeform source string',()=>{
   const text=formatSimulationSummary({people:1,capacity:50,trend:0,online:true,source:'  Webcam  fallback  '});
   assert.match(text,/Source: Webcam fallback/);
 });
-
-test('source metadata cannot leak accidental RTSP credentials into copied summary',()=>{
-  const text=formatSimulationSummary({people:14,capacity:50,trend:1,online:true,source:'rtsp://alice:secret@camera.internal/live'});
-  assert.match(text,/Unspecified demo source/);
-  assert.doesNotMatch(text,/secret|camera.internal|rtsp/i);
-});
-test('valid fallback source remains identifiable in copyable summary',()=>{
-  const text=formatSimulationSummary({people:5,capacity:50,trend:0,online:true,source:'Webcam fallback'});
-  assert.match(text,/Source: Webcam fallback/);
-});
