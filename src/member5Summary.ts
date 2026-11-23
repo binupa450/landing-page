@@ -11,7 +11,10 @@ export interface SimulationSnapshot {
 /** A textual, shareable summary of the simulated scenario, without camera footage. */
 export function formatSimulationSummary(snapshot: SimulationSnapshot): string {
   const result=calculateOccupancy(snapshot.people,snapshot.capacity,snapshot.trend,snapshot.online);
-  const source=snapshot.source.replace(/\s+/g,' ').trim().slice(0,80) || 'Unspecified';
+  const requestedSource=snapshot.source.replace(/\s+/g,' ').trim();
+  // Keep copyable summaries free from unvalidated device addresses or secrets.
+  const source=['CCTV adapter','Webcam fallback'].includes(requestedSource)
+    ? requestedSource : 'Unspecified demo source';
   if(!snapshot.online){
     return 'VISIO demo | Source offline | Data unavailable | No active occupancy estimate';
   }

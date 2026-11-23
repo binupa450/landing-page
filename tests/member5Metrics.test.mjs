@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { calculateOccupancy, WARNING_THRESHOLD_PCT, CRITICAL_THRESHOLD_PCT, FORECAST_HORIZON_MINUTES, describeTrend } from '../src/member5Metrics.ts';
+import { calculateOccupancy, WARNING_THRESHOLD_PCT, CRITICAL_THRESHOLD_PCT, FORECAST_HORIZON_MINUTES, describeTrend, describeSimulationNotice } from '../src/member5Metrics.ts';
 
 test('empty zone has a normal status', () => {
   const state = calculateOccupancy(0, 50, 0, true);
@@ -103,4 +103,21 @@ test('simulated crowd direction labels are accurate for all trends',()=>{
   assert.equal(describeTrend(0),'Steady');
   assert.equal(describeTrend(-8),'Decreasing');
   assert.equal(describeTrend(Number.NaN),'Steady');
+});
+
+test('scenario notice identifies an over-capacity situation explicitly',()=>{
+  const notice=describeSimulationNotice(62,50,2,true);
+  assert.equal(notice.title,'Over capacity');
+  assert.match(notice.detail,/not an operational safety alert/);
+});
+test('offline scenario hides projections and warns about unavailable source',()=>{
+  const notice=describeSimulationNotice(49,50,12,false);
+  assert.equal(notice.title,'Source unavailable');
+  assert.match(notice.detail,/suppressed/);
+});
+test('threshold and projected notices remain consistent with dashboard metrics',()=>{
+  assert.equal(describeSimulationNotice(35,50,0,true).title,'Warning threshold reached');
+  assert.equal(describeSimulationNotice(45,50,0,true).title,'Critical threshold reached');
+  assert.equal(describeSimulationNotice(30,50,5,true).title,'Potential early warning');
+  assert.equal(describeSimulationNotice(5,50,0,true).title,'Normal conditions');
 });
