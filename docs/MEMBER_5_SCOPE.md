@@ -19,3 +19,9 @@ The demonstration is simulated. It does not access a live camera or perform AI d
 
 ## How to test
 Run npm ci then npm run build. Visit the demo and try Calm, Busy, Critical, Offline, sliders, tab switching, acknowledgement and reset.
+
+## Additional verified improvements
+- src/member5Metrics.ts centralizes simulated occupancy thresholds and warnings for staff/public views.
+- Accessible slider descriptions and the named demo landmark improve assistive-technology feedback.
+- tests/member5Metrics.test.mjs checks normal, warning, critical, projected, offline, negative and invalid input cases.
+- Run npm run test:member5 (Node.js 22+) and npm run build before opening a pull request.
