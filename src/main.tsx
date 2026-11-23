@@ -8,6 +8,7 @@ import './team.css';
 import Journey from './Journey';
 import Member5_Rimaz_DashboardSimulation, {Dashboard} from './Member5_Rimaz_DashboardSimulation';
 import {calculateOccupancy} from './member5Metrics';
+import {getPreset, type PresetName} from './member5Presets';
 const icons:Record<string,React.ReactNode>={
 eye:<><path d="M2 12s3.4-7 10-7 10 7 10 7-3.4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></>,camera:<><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3"/></>,chart:<><path d="M3 3v18h18M6 14l4-5 4 3 6-7"/></>,shield:<><path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/><path d="m8 12 3 3 5-6"/></>,bell:<><path d="M18 8a6 6 0 0 0-12 0c0 6-3 6-3 8h18c0-2-3-2-3-8M10 20h4"/></>,clock:<><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>,users:<><circle cx="9" cy="7" r="3"/><path d="M2 20v-3a7 7 0 0 1 14 0v3M17 4a3 3 0 0 1 0 6M19 13a5 5 0 0 1 3 5v2"/></>,arrow:<><path d="M4 12h16m-6-6 6 6-6 6"/></>,check:<path d="m4 12 5 5L20 6"/>,layers:<><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></>,server:<><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h1M7 17.5h1"/></>,globe:<><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18"/></>,menu:<path d="M4 6h16M4 12h16M4 18h16"/>,download:<><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></>,activity:<path d="M2 12h5l3-8 4 16 3-8h5"/>,lock:<><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>,code:<><path d="m7 7-5 5 5 5m10-10 5 5-5 5M14 4l-4 16"/></>,close:<path d="m5 5 14 14M19 5 5 19"/>
 };
@@ -25,7 +26,7 @@ const teamMembers: TeamMember[] = [
   {number:'06',name:'Ramika Punsara',role:'QA (Quality Assurance)',description:'Tests the application, identifies defects, and checks that features work as expected before release.',portrait:'/team/ramika.webp',linkedin:'https://www.linkedin.com/in/ramika-punsara-5284b0401/'}
 ];
 function App(){const [menu,setMenu]=useState(false),[people,setPeople]=useState(38),[capacity,setCapacity]=useState(50),[trend,setTrend]=useState(3),[online,setOnline]=useState(true),[source,setSource]=useState('CCTV adapter'),[mode,setMode]=useState<'staff'|'public'>('staff'),[ack,setAck]=useState(false),[privacy,setPrivacy]=useState(false),[showToTop,setShowToTop]=useState(false);const {pct,projected:prediction}=calculateOccupancy(people,capacity,trend,online);
-const applyPreset=(name:'calm'|'busy'|'critical'|'offline')=>{const presets={calm:[13,50,0,true],busy:[38,50,3,true],critical:[49,50,4,true],offline:[38,50,3,false]} as const;const [n,c,t,available]=presets[name];setPeople(n);setCapacity(c);setTrend(t);setOnline(available);setAck(false);setMode('staff')};
+const applyPreset=(name:PresetName)=>{const {people,capacity,trend,online}=getPreset(name);setPeople(people);setCapacity(capacity);setTrend(trend);setOnline(online);setAck(false);setMode('staff')};
 useEffect(()=>{setAck(false)},[people,capacity,online,trend]);useEffect(()=>{function key(e:KeyboardEvent){if(e.key==='Escape'){setPrivacy(false);setMenu(false)}}window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[]);
 useEffect(()=>{
   const root=document.documentElement;
