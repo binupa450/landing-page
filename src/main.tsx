@@ -15,12 +15,34 @@ function Brand(){return <a className="brand" href="#top" aria-label="VISIO — b
 const features=[['camera','Existing cameras. New intelligence.','Connect to an authorised, compatible CCTV recorder or IP camera stream. A local webcam provides a repeatable fallback.'],['users','See occupancy, not identities.','A pre-trained vision model estimates people within a monitoring zone, filters unreliable detections and stabilises counts.'],['bell','Alerts that explain themselves.','Sustained occupancy conditions generate proposed warning or critical incidents, with a clear reason and response workflow.'],['chart','Anticipate changing crowds.','A proposed short-term trend model explores early warning. Unreliable or insufficient observations suppress forecasts.'],['globe','A better visit starts before arrival.','A public interface shows aggregate crowd status, last update and typical quieter periods when enough history exists.'],['shield','Privacy is part of the architecture.','Protected staff video is separate from public metadata. The design excludes facial recognition and default recording.']];
 type TeamMember = { number: string; name: string; role: string; description: string; portrait?: string; linkedin?: string };
 const teamMembers: TeamMember[] = [
-  {number:'01',name:'Binupa',role:'Project Manager',description:'Coordinates the project, plans tasks and resources, and keeps the team focused on delivering the project on time.',portrait:'/team/binupa.webp'},
-  {number:'02',name:'Nethis',role:'Scrum Master',description:'Facilitates team collaboration, supports Scrum practices, and helps the team identify and resolve blockers.'},
-  {number:'03',name:'Vithum Abeywickrama',role:'Front End Developer',description:'Develops the user interface and builds responsive, accessible, and user-friendly website experiences.',portrait:'/team/vithum.webp',linkedin:'https://www.linkedin.com/in/vithum-abeywickrama-0272623b4/'},
-  {number:'04',name:'Sanula',role:'Technical Leader',description:'Guides technical decisions, oversees the system architecture, and helps maintain code quality across the project.'},
-  {number:'05',name:'Rimaz Thaha',role:'Back End Developer & Camera Integration',description:'Develops server-side functionality, manages application logic and project data, and works on integrating authorised DVR/NVR and IP camera feeds into VISIO.',portrait:'/team/rimaz.webp',linkedin:'https://www.linkedin.com/in/mohamed-rimaz-0303b4296/'},
-  {number:'06',name:'Ramika Punsara',role:'QA (Quality Assurance)',description:'Tests the application, identifies defects, and checks that features work as expected before release.',portrait:'/team/ramika.webp',linkedin:'https://www.linkedin.com/in/ramika-punsara-5284b0401/'}
+  {number:'01',
+    name:'Binupa',
+    role:'Project Manager',
+    description:'Coordinates the project, plans tasks and resources, and keeps the team focused on delivering the project on time.',
+    portrait:'/team/binupa.webp'},
+  {number:'02',
+    name:'Nethis',
+    role:'Scrum Master',
+    description:'Facilitates team collaboration, supports Scrum practices, and helps the team identify and resolve blockers.'},
+  {number:'03',
+    name:'Vithum Abeywickrama',
+    role:'Front End Developer',
+    description:'Develops the VISIO front-end interface , creates reusable UI components, and improves website responsiveness and accessibility.',
+    portrait:'/team/vithum.webp',
+    linkedin:'https://www.linkedin.com/in/vithum-abeywickrama-0272623b4/'},
+  {number:'04',
+    name:'Sanula',
+    role:'Technical Leader',
+    description:'Guides technical decisions, oversees the system architecture, and helps maintain code quality across the project.'},
+  {number:'05',
+    name:'Rimaz Thaha',
+    role:'Back End Developer & Camera Integration',
+    description:'Develops server-side functionality, manages application logic and project data, and works on integrating authorised DVR/NVR and IP camera feeds into VISIO.',portrait:'/team/rimaz.webp',linkedin:'https://www.linkedin.com/in/mohamed-rimaz-0303b4296/'},
+  {number:'06',
+    name:'Ramika Punsara',
+    role:'QA (Quality Assurance)',
+    description:'Tests the application, identifies defects, and checks that features work as expected before release.',
+    portrait:'/team/ramika.webp',linkedin:'https://www.linkedin.com/in/ramika-punsara-5284b0401/'}
 ];
 function Chart({count,trend,capacity,offline=false}:{count:number,trend:number,capacity:number,offline?:boolean}){const nums=Array.from({length:12},(_,i)=>Math.max(0,Math.min(capacity*1.25,count-(11-i)*trend*.24+Math.sin(i*1.3)*2.1)));const p=nums.map((n,i)=>[i*300/11,100-Math.min(n/(capacity*1.25),1)*92]);const line=p.map((v,i)=>(i?'L':'M')+v[0]+' '+v[1]).join(' ');return <svg viewBox="0 0 300 115" preserveAspectRatio="none" role="img" aria-label={offline?'Unavailable illustrative chart':'Illustrative occupancy history'}><defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#baff6e" stopOpacity=".30"/><stop offset="1" stopColor="#baff6e" stopOpacity="0"/></linearGradient></defs>{[20,45,70,95].map(y=><path key={y} d={'M0 '+y+'H300'} stroke="#29414c" strokeDasharray="4 4"/ >)}{!offline&&<><path d={line+' L300 110 H0Z'} fill="url(#chartFill)"/><path d={line} stroke="#baff6e" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke"/><circle cx={p[11][0]-2} cy={p[11][1]} r="3.5" fill="#baff6e"/></>}</svg>}
 function CameraIllustration({count,online}:{count:number,online:boolean}){const people=Array.from({length:Math.min(7, Math.max(0,Math.round(count/7)))},(_,i)=>({x:49+(i%4)*65+(i>3?18:0),y:45+Math.floor(i/4)*64+(i%2)*10}));return <svg className="camera-scene" viewBox="0 0 330 195" role="img" aria-label="Illustrated waiting room with schematic person detection boxes; not real footage"><defs><pattern id="floor" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M0 24V0H24" fill="none" stroke="#25414b" strokeWidth=".7"/></pattern></defs><rect width="330" height="195" fill="#122631"/><rect y="93" width="330" height="102" fill="url(#floor)"/><path d="M0 93 55 51h220l55 42M0 93h330M55 51v42M275 51v42" stroke="#345561" fill="none"/><rect x="115" y="23" width="100" height="44" rx="3" fill="#1c3944" stroke="#3b5e69"/><path d="M165 23v44M115 45h100" stroke="#345561"/><path d="M12 180V23M12 23h306M318 23v157M12 180h306" stroke="#baff6e" strokeOpacity=".45" strokeDasharray="7 6" fill="none"/>{online&&people.map((p,i)=><g key={i} transform={'translate('+p.x+' '+p.y+')'}><rect x="-14" y="-7" width="28" height="52" rx="2" fill="none" stroke="#baff6e" strokeOpacity=".8"/><circle cy="4" r="7" fill="#80a4aa"/><path d="M-11 19Q0 10 11 19v14H-11Z" fill="#6a8997"/><path d="M-5 33v10M5 33v10" stroke="#8aabb0" strokeWidth="4"/><rect x="-14" y="-14" width="23" height="7" fill="#baff6e"/><text x="-12" y="-8" fill="#091923" fontSize="5.6">person</text></g>)}{!online&&<g><rect width="330" height="195" fill="#091923" opacity=".83"/><text x="165" y="100" textAnchor="middle" fill="#b5cbd0" fontSize="13">SOURCE UNAVAILABLE</text></g>}</svg>}
