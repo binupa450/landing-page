@@ -2,6 +2,10 @@
  * Pure numeric calculations for Member 5's simulated dashboard.
  * This is illustrative UI logic, not certified crowd safety software.
  */
+export const WARNING_THRESHOLD_PCT = 70;
+export const CRITICAL_THRESHOLD_PCT = 90;
+export const FORECAST_HORIZON_MINUTES = 3;
+
 export type OccupancyTone = 'muted' | 'critical' | 'warning' | 'healthy';
 
 export interface OccupancyMetrics {
@@ -26,16 +30,16 @@ export function calculateOccupancy(
   const safeCount = Number.isFinite(count) ? Math.max(0, count) : 0;
   const safeTrend = Number.isFinite(trend) ? trend : 0;
   const pct = Math.round(safeCount / safeCapacity * 100);
-  const projected = Math.round(Math.max(0, safeCount + safeTrend * 3) / safeCapacity * 100);
-  const critical = online && pct >= 90;
-  const busy = online && pct >= 70;
+  const projected = Math.round(Math.max(0, safeCount + safeTrend * FORECAST_HORIZON_MINUTES) / safeCapacity * 100);
+  const critical = online && pct >= CRITICAL_THRESHOLD_PCT;
+  const busy = online && pct >= WARNING_THRESHOLD_PCT;
   const status = !online ? 'Unavailable' : critical ? 'Very busy' : busy ? 'Busy' : 'Normal';
   const tone: OccupancyTone = !online ? 'muted' : critical ? 'critical' : busy ? 'warning' : 'healthy';
   const alertTitle = !online ? 'Data unavailable' : critical ? 'Critical condition' :
-    busy ? 'Warning condition' : projected >= 90 ? 'Projected risk' : 'Conditions normal';
+    busy ? 'Warning condition' : projected >= CRITICAL_THRESHOLD_PCT ? 'Projected risk' : 'Conditions normal';
   const alertDetail = !online ? 'Do not use stale observations' :
     critical || busy ? 'Persistence check required' :
-    projected >= 90 ? 'Projected threshold crossing' : 'Continue monitoring';
+    projected >= CRITICAL_THRESHOLD_PCT ? 'Projected threshold crossing' : 'Continue monitoring';
 
   return { pct, projected, critical, busy, status, tone, alertTitle, alertDetail };
 }

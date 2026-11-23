@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { calculateOccupancy } from '../src/member5Metrics.ts';
+import { calculateOccupancy, WARNING_THRESHOLD_PCT, CRITICAL_THRESHOLD_PCT, FORECAST_HORIZON_MINUTES } from '../src/member5Metrics.ts';
 
 test('empty zone has a normal status', () => {
   const state = calculateOccupancy(0, 50, 0, true);
@@ -75,4 +75,11 @@ test('non-finite inputs do not produce NaN percentages', () => {
 test('negative counts are normalized for calculations', () => {
   const state = calculateOccupancy(-100, 50, 0, true);
   assert.equal(state.pct, 0);
+});
+
+test('proposed threshold constants are centrally defined', () => {
+  assert.equal(WARNING_THRESHOLD_PCT, 70);
+  assert.equal(CRITICAL_THRESHOLD_PCT, 90);
+  assert.equal(FORECAST_HORIZON_MINUTES, 3);
+  assert.ok(CRITICAL_THRESHOLD_PCT > WARNING_THRESHOLD_PCT);
 });
