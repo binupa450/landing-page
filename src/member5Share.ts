@@ -7,9 +7,16 @@ export const VISIO_DEMO_QUERY_KEY = 'visio_demo';
 export function encodeDemoQuery(snapshot:SimulationSnapshot):string {
   const params=new URLSearchParams();
   params.set(VISIO_DEMO_QUERY_KEY,'1');
-  params.set('people',String(snapshot.people));
-  params.set('capacity',String(snapshot.capacity));
-  params.set('trend',String(snapshot.trend));
+  // A caller may supply values beyond the slider bounds: encode only a
+  // recoverable demonstration, not arbitrary numbers or non-finite values.
+  const normalize=(value:number,min:number,max:number,step=1)=>{
+    if(!Number.isFinite(value)) return min;
+    const bounded=Math.max(min,Math.min(max,value));
+    return Math.min(max,min+Math.round((bounded-min)/step)*step);
+  };
+  params.set('people',String(normalize(snapshot.people,0,120)));
+  params.set('capacity',String(normalize(snapshot.capacity,10,100,5)));
+  params.set('trend',String(normalize(snapshot.trend,-8,12)));
   params.set('online',snapshot.online?'1':'0');
   params.set('source',allowedSources.includes(snapshot.source as typeof allowedSources[number])?
     snapshot.source:'CCTV adapter');

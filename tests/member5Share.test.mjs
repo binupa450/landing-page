@@ -42,3 +42,12 @@ test('duplicated query keys do not silently override a demo scenario',()=>{
 test('unknown query keys are not accepted as part of a share token',()=>{
   assert.equal(parseDemoQuery(encodeDemoQuery(demo)+'&camera_password=secret'),null);
 });
+
+test('share encoding bounds invalid numeric inputs and restores a valid simulation',()=>{
+  const query=encodeDemoQuery({...demo,people:999,capacity:0,trend:Infinity});
+  assert.deepEqual(parseDemoQuery(query),{...demo,people:120,capacity:10,trend:-8});
+});
+test('share encoding normalizes non-integer crowd and capacity values',()=>{
+  const query=encodeDemoQuery({...demo,people:17.6,capacity:47,trend:2.2});
+  assert.deepEqual(parseDemoQuery(query),{...demo,people:18,capacity:45,trend:2});
+});
