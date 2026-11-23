@@ -83,3 +83,17 @@ test('proposed threshold constants are centrally defined', () => {
   assert.equal(FORECAST_HORIZON_MINUTES, 3);
   assert.ok(CRITICAL_THRESHOLD_PCT > WARNING_THRESHOLD_PCT);
 });
+
+test('occupancy above 100% is clearly reported as over capacity', () => {
+  const metrics = calculateOccupancy(60, 50, 2, true);
+  assert.equal(metrics.pct, 120);
+  assert.equal(metrics.overCapacity, true);
+  assert.equal(metrics.status, 'Over capacity');
+  assert.equal(metrics.tone, 'critical');
+  assert.equal(metrics.alertTitle, 'Over capacity');
+});
+test('a full zone is not mislabeled over capacity', () => {
+  const metrics = calculateOccupancy(50, 50, 0, true);
+  assert.equal(metrics.pct, 100);
+  assert.equal(metrics.overCapacity, false);
+});

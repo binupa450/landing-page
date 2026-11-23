@@ -13,7 +13,8 @@ export interface OccupancyMetrics {
   projected: number;
   critical: boolean;
   busy: boolean;
-  status: 'Unavailable' | 'Very busy' | 'Busy' | 'Normal';
+  status: 'Unavailable' | 'Over capacity' | 'Very busy' | 'Busy' | 'Normal';
+  overCapacity: boolean;
   tone: OccupancyTone;
   alertTitle: string;
   alertDetail: string;
@@ -31,15 +32,16 @@ export function calculateOccupancy(
   const safeTrend = Number.isFinite(trend) ? trend : 0;
   const pct = Math.round(safeCount / safeCapacity * 100);
   const projected = Math.round(Math.max(0, safeCount + safeTrend * FORECAST_HORIZON_MINUTES) / safeCapacity * 100);
+  const overCapacity = online && pct > 100;
   const critical = online && pct >= CRITICAL_THRESHOLD_PCT;
   const busy = online && pct >= WARNING_THRESHOLD_PCT;
-  const status = !online ? 'Unavailable' : critical ? 'Very busy' : busy ? 'Busy' : 'Normal';
+  const status = !online ? 'Unavailable' : overCapacity ? 'Over capacity' : critical ? 'Very busy' : busy ? 'Busy' : 'Normal';
   const tone: OccupancyTone = !online ? 'muted' : critical ? 'critical' : busy ? 'warning' : 'healthy';
-  const alertTitle = !online ? 'Data unavailable' : critical ? 'Critical condition' :
+  const alertTitle = !online ? 'Data unavailable' : overCapacity ? 'Over capacity' : critical ? 'Critical condition' :
     busy ? 'Warning condition' : projected >= CRITICAL_THRESHOLD_PCT ? 'Projected risk' : 'Conditions normal';
   const alertDetail = !online ? 'Do not use stale observations' :
     critical || busy ? 'Persistence check required' :
     projected >= CRITICAL_THRESHOLD_PCT ? 'Projected threshold crossing' : 'Continue monitoring';
 
-  return { pct, projected, critical, busy, status, tone, alertTitle, alertDetail };
+  return { pct, projected, critical, busy, overCapacity, status, tone, alertTitle, alertDetail };
 }
