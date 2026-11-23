@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:member5": "node --experimental-strip-types --test tests/member5*.test.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

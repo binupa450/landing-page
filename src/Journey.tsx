@@ -95,6 +95,29 @@ export default function Journey({count,capacity,trend,online}:JourneyProps){
           <a className="journey-try-link" href="#demo">Explore this with the simulator <span aria-hidden="true">↗</span></a>
           <p className="journey-footnote">Illustrative process · Linked to the scenario controls below · No camera connection or real-time inference</p>
         </div>
+        <div className="journey-navigation">
+          <button
+              type="button"
+              onClick={() => setActive((prev) => Math.max(0, prev - 1))}
+              disabled={active === 0}
+          >
+            ← Previous
+          </button>
+
+          <span>
+    Stage {active + 1} of {stages.length}
+  </span>
+
+          <button
+              type="button"
+              onClick={() =>
+                  setActive((prev) => Math.min(stages.length - 1, prev + 1))
+              }
+              disabled={active === stages.length - 1}
+          >
+            Next →
+          </button>
+        </div>
       </div>
     </div>
   </section>;
