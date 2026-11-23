@@ -20,6 +20,10 @@ export function encodeDemoQuery(snapshot:SimulationSnapshot):string {
 export function parseDemoQuery(search:string):SimulationSnapshot|null {
   const params=new URLSearchParams(search);
   if(params.get(VISIO_DEMO_QUERY_KEY)!=='1') return null;
+  // Reject ambiguous duplicated values instead of silently accepting the first one.
+  const expectedKeys=[VISIO_DEMO_QUERY_KEY,'people','capacity','trend','online','source'];
+  if([...params.keys()].some(key=>!expectedKeys.includes(key))) return null;
+  if(expectedKeys.some(key=>params.getAll(key).length!==1)) return null;
   const value=(name:string)=>params.get(name);
   if(['people','capacity','trend','online','source'].some(name=>value(name)===null)) return null;
   const people=Number(value('people')), capacity=Number(value('capacity')), trend=Number(value('trend'));

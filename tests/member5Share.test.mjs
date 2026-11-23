@@ -33,3 +33,12 @@ test('share URLs go to the demonstration without preserving other query strings'
   assert.equal(buildDemoShareUrl('https://visio.example','/index.html',demo),
     'https://visio.example/index.html?'+encodeDemoQuery(demo)+'#demo');
 });
+
+test('duplicated query keys do not silently override a demo scenario',()=>{
+  const url=encodeDemoQuery(demo);
+  assert.equal(parseDemoQuery(url+'&people=1'),null);
+  assert.equal(parseDemoQuery(url+'&visio_demo=1'),null);
+});
+test('unknown query keys are not accepted as part of a share token',()=>{
+  assert.equal(parseDemoQuery(encodeDemoQuery(demo)+'&camera_password=secret'),null);
+});
