@@ -7,6 +7,10 @@ import './motion.css';
 import './signature.css';
 import './team.css';
 import Journey from './Journey';
+import Member5_Rimaz_DashboardSimulation, {Dashboard} from './Member5_Rimaz_DashboardSimulation';
+import {calculateOccupancy} from './member5Metrics';
+import {getPreset, type PresetName} from './member5Presets';
+import {parseDemoQuery} from './member5Share';
 
 const icons:Record<string,React.ReactNode>={
   eye:<><path d="M2 12s3.4-7 10-7 10 7 10 7-3.4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></>,
@@ -108,105 +112,24 @@ const teamMembers: TeamMember[] = [
   }
 ];
 
-function Chart({count,trend,capacity,offline=false}:{count:number,trend:number,capacity:number,offline?:boolean}){
-  const nums=Array.from({length:12},(_,i)=>Math.max(0,Math.min(capacity*1.25,count-(11-i)*trend*.24+Math.sin(i*1.3)*2.1)));
-  const p=nums.map((n,i)=>[i*300/11,100-Math.min(n/(capacity*1.25),1)*92]);
-  const line=p.map((v,i)=>(i?'L':'M')+v[0]+' '+v[1]).join(' ');
-  return <svg viewBox="0 0 300 115" preserveAspectRatio="none" role="img" aria-label={offline?'Unavailable illustrative chart':'Illustrative occupancy history'}>
-    <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#baff6e" stopOpacity=".30"/><stop offset="1" stopColor="#baff6e" stopOpacity="0"/></linearGradient></defs>
-    {[20,45,70,95].map(y=><path key={y} d={'M0 '+y+'H300'} stroke="#29414c" strokeDasharray="4 4"/ >)}
-      {!offline&&<>
-        <path d={line+' L300 110 H0Z'} fill="url(#chartFill)"/>
-        <path d={line} stroke="#baff6e" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke"/>
-        <circle cx={p[11][0]-2} cy={p[11][1]} r="3.5" fill="#baff6e"/>
-      </>}
-    </svg>
-    }
-
-    function CameraIllustration({count,online}:{count:number,online:boolean}){
-    const people=Array.from({length:Math.min(7, Math.max(0,Math.round(count/7)))},(_,i)=>({x:49+(i%4)*65+(i>3?18:0),y:45+Math.floor(i/4)*64+(i%2)*10}));
-    return <svg className="camera-scene" viewBox="0 0 330 195" role="img" aria-label="Illustrated waiting room with schematic person detection boxes; not real footage">
-    <defs><pattern id="floor" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M0 24V0H24" fill="none" stroke="#25414b" strokeWidth=".7"/></pattern></defs>
-    <rect width="330" height="195" fill="#122631"/>
-    <rect y="93" width="330" height="102" fill="url(#floor)"/>
-    <path d="M0 93 55 51h220l55 42M0 93h330M55 51v42M275 51v42" stroke="#345561" fill="none"/>
-    <rect x="115" y="23" width="100" height="44" rx="3" fill="#1c3944" stroke="#3b5e69"/>
-    <path d="M165 23v44M115 45h100" stroke="#345561"/>
-    <path d="M12 180V23M12 23h306M318 23v157M12 180h306" stroke="#baff6e" strokeOpacity=".45" strokeDasharray="7 6" fill="none"/>
-  {online&&people.map((p,i)=><g key={i} transform={'translate('+p.x+' '+p.y+')'}>
-    <rect x="-14" y="-7" width="28" height="52" rx="2" fill="none" stroke="#baff6e" strokeOpacity=".8"/>
-    <circle cy="4" r="7" fill="#80a4aa"/>
-    <path d="M-11 19Q0 10 11 19v14H-11Z" fill="#6a8997"/>
-    <path d="M-5 33v10M5 33v10" stroke="#8aabb0" strokeWidth="4"/>
-    <rect x="-14" y="-14" width="23" height="7" fill="#baff6e"/>
-    <text x="-12" y="-8" fill="#091923" fontSize="5.6">person</text>
-  </g>)}
-{!online&&<g>
-    <rect width="330" height="195" fill="#091923" opacity=".83"/>
-    <text x="165" y="100" textAnchor="middle" fill="#b5cbd0" fontSize="13">SOURCE UNAVAILABLE</text>
-  </g>}
-</svg>
-}
-
-function Dashboard({count=38,capacity=50,trend=3,online=true,mode='staff',source='CCTV adapter'}:{count?:number,capacity?:number,trend?:number,online?:boolean,mode?:'staff'|'public',source?:string}){
-  const pct=Math.round(count/capacity*100);
-  const projected=Math.round(Math.max(0,count+trend*3)/capacity*100);
-  const critical=online&&pct>=90;
-  const busy=online&&pct>=70;
-  const status=!online?'Unavailable':critical?'Very busy':busy?'Busy':'Normal';
-  const color=!online?'muted':critical?'critical':busy?'warning':'healthy';
-  return <div className="dashboard">
-    <div className="windowbar"><span className="windowdots"><i/><i/><i/></span><span>VISIO / {mode==='staff'?'Control':'Public'}</span><span className="mini-tag">SIMULATION</span></div>
-    {mode==='staff'?<>
-      <div className="deskbar"><div><strong>Monitoring overview</strong><small>Demonstration branch • Waiting area</small></div><span className={'status '+color}><i/>{online?'Source connected':'Offline'}</span></div>
-      <div className="metric-grid">
-        <div><small>People detected</small><b>{online?count:'—'} <em>/ {capacity}</em></b><span>Estimated count</span></div>
-        <div><small>Zone occupancy</small><b>{online?pct+'%':'—'}</b><span className={color}>{status}</span></div>
-        <div><small>3 min projection</small><b>{online?projected+'%':'—'}</b><span>Illustrative trend</span></div>
-      </div>
-      <div className="dash-grid">
-        <div className="dash-panel">
-          <div className="panelbar"><strong><Icon name="camera" size={13}/> Zone camera</strong><small>{source}</small></div>
-          <CameraIllustration count={count} online={online}/>
-          <div className="camera-caption">Illustrated scene — no real footage</div>
-        </div>
-        <div className="dash-panel">
-          <div className="panelbar"><strong><Icon name="chart" size={13}/> Occupancy trend</strong></div>
-          <div className="chart-wrap"><Chart count={count} capacity={capacity} trend={trend} offline={!online}/></div>
-          <div className="chart-labels"><span>Earlier</span><span>Now</span></div>
-          <div className="mini-alert"><Icon name={critical?'bell':'activity'} size={16}/><div><strong>{!online?'Data unavailable':critical?'Critical condition':busy?'Warning condition':projected>=90?'Projected risk':'Conditions normal'}</strong><small>{!online?'Do not use stale observations':critical||busy?'Persistence check required':projected>=90?'Projected threshold crossing':'Continue monitoring'}</small></div></div>
-        </div>
-      </div>
-      <div className="dash-footer"><span><Icon name="lock" size={12}/> Staff-only concept</span><span>Demo data only</span></div>
-    </>:<div className="public-preview">
-      <span className="eyebrow"><i/> PUBLIC STATUS CONCEPT</span>
-      <h3>Plan a better visit.</h3>
-      <p>Demonstration branch · Waiting area</p>
-      <div className={'public-status '+color}><Icon name="users" size={26}/><div><small>Current crowd condition</small><strong>{status}</strong></div></div>
-      <div className="public-line"><span>Last update</span><b>{online?'Simulated now':'Unavailable'}</b></div>
-      <div className="public-line"><span>Typical quieter periods</span><b>Insufficient history</b></div>
-      <p className="quiet-note">Crowd conditions are estimates, not waiting-time guarantees. No private camera footage is available here.</p>
-    </div>}
-  </div>
-}
-
 function App(){
   const [menu,setMenu]=useState(false),[people,setPeople]=useState(38),[capacity,setCapacity]=useState(50),[trend,setTrend]=useState(3),[online,setOnline]=useState(true),[source,setSource]=useState('CCTV adapter'),[mode,setMode]=useState<'staff'|'public'>('staff'),[ack,setAck]=useState(false),[privacy,setPrivacy]=useState(false),[showToTop,setShowToTop]=useState(false);
-  const pct=Math.round(people/capacity*100);
-  const prediction=Math.round(Math.max(0,people+trend*3)/capacity*100);
+  const {pct,projected:prediction}=calculateOccupancy(people,capacity,trend,online);
 
-  const applyPreset=(name:'calm'|'busy'|'critical'|'offline')=>{
-    const presets={calm:[13,50,0,true],busy:[38,50,3,true],critical:[49,50,4,true],offline:[38,50,3,false]} as const;
-    const [n,c,t,available]=presets[name];
-    setPeople(n);
-    setCapacity(c);
-    setTrend(t);
-    setOnline(available);
-    setAck(false);
-    setMode('staff')
+  const applyPreset=(name:PresetName)=>{
+    const {people,capacity,trend,online}=getPreset(name);
+    setPeople(people);setCapacity(capacity);setTrend(trend);setOnline(online);
+    setAck(false);setMode('staff');
   };
 
-  useEffect(()=>{setAck(false)},[people,capacity,online,trend]);
+  useEffect(()=>{
+    const restored=parseDemoQuery(window.location.search);
+    if(!restored) return;
+    setPeople(restored.people);setCapacity(restored.capacity);
+    setTrend(restored.trend);setOnline(restored.online);
+    setSource(restored.source);setMode('staff');setAck(false);
+  },[]);
+  useEffect(()=>{setAck(false)},[people,capacity,online,trend,source]);
 
   useEffect(()=>{
     function key(e:KeyboardEvent){
@@ -365,7 +288,7 @@ function App(){
               <div className="float-label"><span className="pulse"/> <span>Concept monitoring dashboard</span></div>
               <span className="visual-system-id">ZONE / 01 <i/> SIMULATED</span>
             </div>
-            <Dashboard/>
+            <Dashboard Icon={Icon}/>
             <div className="visual-note">Product concept · Simulated data, not a live client deployment</div>
           </div>
         </div>
@@ -443,54 +366,13 @@ function App(){
 
       <Journey count={people} capacity={capacity} trend={trend} online={online}/>
 
-      <section id="demo" className="section demo-section">
-        <div className="shell">
-          <div className="section-head">
-            <span className="eyebrow dark-label">04 / EXPERIENCE VISIO</span>
-            <h2>Explore the intelligence.</h2>
-            <p>Change the number of people, capacity and growth rate. See how the proposed system interprets a simulated crowd condition.</p>
-          </div>
-          <div className="simulation">
-            <div className="sim-controls">
-              <div className="sim-header"><span className="tag">INTERACTIVE SIMULATION</span><h3>Scenario controls</h3><p>No camera is accessed. All values are illustrative.</p></div>
-              <div className="scenario-presets" role="group" aria-label="Quick scenario presets">
-                <span>QUICK SCENARIOS</span>
-                <button type="button" onClick={()=>applyPreset('calm')}>Calm</button>
-                <button type="button" onClick={()=>applyPreset('busy')}>Busy</button>
-                <button type="button" onClick={()=>applyPreset('critical')}>Critical</button>
-                <button type="button" onClick={()=>applyPreset('offline')}>Offline</button>
-              </div>
-              <label htmlFor="source">Simulated input source</label>
-              <select id="source" value={source} onChange={e=>setSource(e.target.value)}>
-                <option>CCTV adapter</option>
-                <option>Webcam fallback</option>
-              </select>
-              <label htmlFor="capacity">Zone capacity <b>{capacity}</b></label>
-              <input id="capacity" type="range" min="10" max="100" step="5" value={capacity} onChange={e=>setCapacity(+e.target.value)}/>
-              <label htmlFor="people">Detected people <b>{people}</b></label>
-              <input id="people" type="range" min="0" max="120" value={people} onChange={e=>setPeople(+e.target.value)}/>
-              <label htmlFor="trend">Change per minute <b>{trend>0?'+':''}{trend}</b></label>
-              <input id="trend" type="range" min="-8" max="12" value={trend} onChange={e=>setTrend(+e.target.value)}/>
-              <label className="toggle-line"><span>Source available</span><input type="checkbox" checked={online} onChange={e=>setOnline(e.target.checked)}/></label>
-              <div className="scenario" role="status" aria-live="polite">
-                <strong>{!online?'Source unavailable':pct>=90?'Critical threshold reached':pct>=70?'Warning threshold reached':prediction>=90?'Potential early warning':'Normal conditions'}</strong>
-                <p>{!online?'Live estimates and projections are suppressed.':pct>=70?'Actual incidents would require a sustained condition.':prediction>=90?'The illustrative three-minute projection crosses 90%.':'Continue monitoring valid observations.'}</p>
-              </div>
-              <button className="btn reset" onClick={()=>{setPeople(38);setCapacity(50);setTrend(3);setOnline(true);setSource('CCTV adapter');setAck(false)}}>Reset scenario</button>
-            </div>
-
-            <div className="sim-view">
-              <div className="tabs" role="group" aria-label="Preview interface">
-                <button className={mode==='staff'?'selected':''} aria-pressed={mode==='staff'} onClick={()=>setMode('staff')}><Icon name="lock" size={17}/> Staff dashboard</button>
-                <button className={mode==='public'?'selected':''} aria-pressed={mode==='public'} onClick={()=>setMode('public')}><Icon name="globe" size={17}/> Public portal</button>
-              </div>
-              <Dashboard count={people} capacity={capacity} trend={trend} online={online} mode={mode} source={source}/>
-              {mode==='staff'&&online&&pct>=70&&<button className="btn ack" disabled={ack} onClick={()=>setAck(true)}><Icon name="check" size={18}/>{ack?'Simulated incident acknowledged':'Simulate acknowledging incident'}</button>}
-              <p className="sim-disclaimer">Illustrative thresholds: 70% warning, 90% critical. Not approved safety limits. The demonstration does not validate counting accuracy, real-time latency or a forecasting model.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Member5_Rimaz_DashboardSimulation
+        people={people} capacity={capacity} trend={trend} online={online}
+        source={source} mode={mode} ack={ack} pct={pct} prediction={prediction}
+        setPeople={setPeople} setCapacity={setCapacity} setTrend={setTrend}
+        setOnline={setOnline} setSource={setSource} setMode={setMode}
+        setAck={setAck} applyPreset={applyPreset} Icon={Icon}
+      />
 
       <section className="section light" id="research">
         <div className="shell research-grid">
