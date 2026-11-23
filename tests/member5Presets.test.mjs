@@ -22,3 +22,7 @@ test('active preset detection matches every defined scenario',()=>{
 test('modified slider values clear the active preset selection',()=>{
   assert.equal(getActivePreset({...getPreset('busy'),people:39}),null);
 });
+
+test('reset baseline reproduces the busy startup scenario',()=>{
+  assert.deepEqual(getPreset('busy'),{people:38,capacity:50,trend:3,online:true});
+});
