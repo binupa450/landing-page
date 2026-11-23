@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { calculateOccupancy, WARNING_THRESHOLD_PCT, CRITICAL_THRESHOLD_PCT, FORECAST_HORIZON_MINUTES } from '../src/member5Metrics.ts';
+import { calculateOccupancy, WARNING_THRESHOLD_PCT, CRITICAL_THRESHOLD_PCT, FORECAST_HORIZON_MINUTES, describeTrend } from '../src/member5Metrics.ts';
 
 test('empty zone has a normal status', () => {
   const state = calculateOccupancy(0, 50, 0, true);
@@ -96,4 +96,11 @@ test('a full zone is not mislabeled over capacity', () => {
   const metrics = calculateOccupancy(50, 50, 0, true);
   assert.equal(metrics.pct, 100);
   assert.equal(metrics.overCapacity, false);
+});
+
+test('simulated crowd direction labels are accurate for all trends',()=>{
+  assert.equal(describeTrend(5),'Increasing');
+  assert.equal(describeTrend(0),'Steady');
+  assert.equal(describeTrend(-8),'Decreasing');
+  assert.equal(describeTrend(Number.NaN),'Steady');
 });

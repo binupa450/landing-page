@@ -45,3 +45,9 @@ export function calculateOccupancy(
 
   return { pct, projected, critical, busy, overCapacity, status, tone, alertTitle, alertDetail };
 }
+
+/** Describe the direction without claiming to predict real-world occupancy. */
+export function describeTrend(trend: number): 'Increasing' | 'Decreasing' | 'Steady' {
+  const value=Number.isFinite(trend) ? trend : 0;
+  return value>0 ? 'Increasing' : value<0 ? 'Decreasing' : 'Steady';
+}
