@@ -25,3 +25,5 @@ Run npm ci then npm run build. Visit the demo and try Calm, Busy, Critical, Offl
 - Accessible slider descriptions and the named demo landmark improve assistive-technology feedback.
 - tests/member5Metrics.test.mjs checks normal, warning, critical, projected, offline, negative and invalid input cases.
 - Run npm run test:member5 (Node.js 22+) and npm run build before opening a pull request.
+
+- Source changes now invalidate prior simulated incident acknowledgement, avoiding stale acknowledgements after switching between CCTV and webcam fallback.

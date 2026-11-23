@@ -27,7 +27,7 @@ const teamMembers: TeamMember[] = [
 ];
 function App(){const [menu,setMenu]=useState(false),[people,setPeople]=useState(38),[capacity,setCapacity]=useState(50),[trend,setTrend]=useState(3),[online,setOnline]=useState(true),[source,setSource]=useState('CCTV adapter'),[mode,setMode]=useState<'staff'|'public'>('staff'),[ack,setAck]=useState(false),[privacy,setPrivacy]=useState(false),[showToTop,setShowToTop]=useState(false);const {pct,projected:prediction}=calculateOccupancy(people,capacity,trend,online);
 const applyPreset=(name:PresetName)=>{const {people,capacity,trend,online}=getPreset(name);setPeople(people);setCapacity(capacity);setTrend(trend);setOnline(online);setAck(false);setMode('staff')};
-useEffect(()=>{setAck(false)},[people,capacity,online,trend]);useEffect(()=>{function key(e:KeyboardEvent){if(e.key==='Escape'){setPrivacy(false);setMenu(false)}}window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[]);
+useEffect(()=>{setAck(false)},[people,capacity,online,trend,source]);useEffect(()=>{function key(e:KeyboardEvent){if(e.key==='Escape'){setPrivacy(false);setMenu(false)}}window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[]);
 useEffect(()=>{
   const root=document.documentElement;
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
