@@ -51,32 +51,3 @@ export function describeTrend(trend: number): 'Increasing' | 'Decreasing' | 'Ste
   const value=Number.isFinite(trend) ? trend : 0;
   return value>0 ? 'Increasing' : value<0 ? 'Decreasing' : 'Steady';
 }
-
-
-/** Human-readable scenario notice, using the same thresholds as the dashboard. */
-export function describeSimulationNotice(
-  count:number,capacity:number,trend:number,online:boolean
-): {title:string;detail:string} {
-  const state=calculateOccupancy(count,capacity,trend,online);
-  if(!online) return {
-    title:'Source unavailable',
-    detail:'Live estimates and projections are suppressed.'
-  };
-  if(state.overCapacity) return {
-    title:'Over capacity',
-    detail:'Demo occupancy exceeds the configured capacity; not an operational safety alert.'
-  };
-  if(state.critical) return {
-    title:'Critical threshold reached',
-    detail:'Actual incidents would require a sustained condition.'
-  };
-  if(state.busy) return {
-    title:'Warning threshold reached',
-    detail:'Actual incidents would require a sustained condition.'
-  };
-  if(state.projected>=CRITICAL_THRESHOLD_PCT) return {
-    title:'Potential early warning',
-    detail:'The illustrative three-minute projection crosses 90%.'
-  };
-  return {title:'Normal conditions',detail:'Continue monitoring valid observations.'};
-}
